@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Websocket</title>
+    <style>
+        body {
+            background-color: whitesmoke;
+            padding-top: 10%;
+        }
+
+        .chat-container {
+            width: 310px;
+            background-color: white;
+            min-height: 310px;
+            margin: auto;
+            padding: 20px;
+        }
+
+        .chat-body textarea {
+            width: calc(100% - 40px);
+            border: none;
+            height: 100px;
+            box-shadow: rgba(0,0,0,.2) 0px 0px 0px 1px;
+            padding: 20px;
+        }
+
+        .chat-body .btn {
+            width: 100%;
+            border: none;
+            background: rgb(37,165,228);
+            background: linear-gradient(90deg, rgba(37,165,228,1) 0%, rgba(40,135,229,1) 10%, rgba(41,161,229,1) 47%, rgba(37,92,228,1) 100%);
+            padding: 10px;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+        }
+
+        .chat-body .phone {
+            box-shadow: rgba(0,0,0,.2) 0px 0px 0px 1px;
+            padding: 10px;
+            border: none;
+            margin-bottom: 10px;
+        }
+
+        .chat-body #output {
+            text-align: right;
+        }
+
+        .chat-body .message {
+            display: flex; /* Make the message container a flexbox */
+            justify-content: flex-end; /* Align content to the right end */
+        }
+
+            .chat-body .message span {
+                background-color: #255ce4;
+                padding: 10px;
+                border-radius: 10px;
+                border-bottom-right-radius: 0px;
+                text-align: right;
+                color: white;
+                padding: 10px;
+                width: fit-content;
+                display: block;
+            }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-body">
+            <div id='output'>
+            </div>
+            <h5>WEB SMS</h5>
+            <input class="phone" placeholder='09xxx,09xxx' pattern="[0-9]+([\.,][0-9]+)?" value="" id='phoneNumber' required/>
+            <textarea placeholder='Enter Your Message' id='message' required></textarea>
+            <input class="btn" type='submit' value='Send' onclick='SendMessage()' />
+        </div>
+        <h4>© Richard Predas 2024</h4>
+    </div>
+</body>
+</html>
+<script>
+
+    //var wsUri = 'ws://192.168.1.241:8030';
+    var wsUri = 'wss://free.blr2.piesocket.com/v3/1?api_key=D7c9LkQfWAppDG3K3tdsUKHNTWu4tDpIy6A2D4lK&notify_self=1';
+    // CREATE YOUR WEBSOCKET ONLINE ON https://piehost.com/app/v4/login
+
+    var output;
+    function init() {
+        output = document.getElementById('output');
+        testWebSocket();
+    }
+    function testWebSocket() {
+        websocket = new WebSocket(wsUri);
+        websocket.onopen = function (evt) { onOpen(evt) };
+        websocket.onclose = function (evt) { onClose(evt) };
+        websocket.onmessage = function (evt) { onMessage(evt) };
+        websocket.onerror = function (evt) { onError(evt) };
+    }
+    function onOpen(evt) {
+        writeToScreen('CONNECTED');
+    }
+    function onClose(evt) {
+        //Disconnected
+    }
+    function onMessage(evt) {
+        var json = JSON.parse(evt.data);
+        //writeToScreen('<br><span class="message">' + json['message'] + '</span>');
+    }
+    function onError(evt) {
+        writeToScreen('<span>ERROR: Webserver APP is not Open</span>');
+    }
+    function SendMessage() {
+        var phoneNumber = document.getElementById('phoneNumber').value;
+        var message = document.getElementById('message').value;
+        if (message.trim() != '') { // Avoid White Space
+            var watermark = "\n\n\n==========================\nThis TEXT Message is an Online Generated.\n\nPlease do not reply to this number";
+            var _data = {
+                "receiver": phoneNumber,
+                "message": message + watermark
+            }
+            writeToScreen('<div class="message">  <span>' + message + '</span></div>');
+            const phoneArray = phoneNumber.trim().split(",");
+            if (!phoneArray.includes("09100036119") && !phoneArray.includes('639100036119') && !phoneArray.includes('+639100036119')) {
+                var mydata = JSON.stringify(_data);
+                websocket.send(mydata);
+            }
+            document.getElementById('message').value = ''; 
+            document.getElementById('message').focus();
+        }
+    }
+    function writeToScreen(message) {
+        var pre = document.createElement('p');
+        pre.style.wordWrap = 'break-word';
+        pre.innerHTML = message;
+        output.appendChild(pre);
+    }
+    window.addEventListener('load', init, false);
+
+
+
+    window.oncontextmenu = function () {
+        return false;
+    }
+
+    //SECURITY
+    document.onkeydown = function (e) {
+        if (e.keyCode == 123) {
+            return false;
+        }
+        if (e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) {
+            return false;
+        }
+        if (e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) {
+            return false;
+        }
+        if (e.ctrlKey && e.shiftKey && e.keyCode == 'U'.charCodeAt(0)) {
+            return false;
+        }
+    }
+
+    !function () {
+        function detectDevTool(allow) {
+            if (isNaN(+allow)) allow = 100;
+            var start = +new Date();
+            debugger;
+            var end = +new Date();
+            if (isNaN(start) || isNaN(end) || end - start > allow) {
+
+            }
+        }
+        if (window.attachEvent) {
+            if (document.readyState === "complete" || document.readyState === "interactive") {
+                detectDevTool();
+                window.attachEvent('onresize', detectDevTool);
+                window.attachEvent('onmousemove', detectDevTool);
+                window.attachEvent('onfocus', detectDevTool);
+                window.attachEvent('onblur', detectDevTool);
+            } else {
+                setTimeout(argument.callee, 0);
+            }
+        } else {
+            window.addEventListener('load', detectDevTool);
+            window.addEventListener('resize', detectDevTool);
+            window.addEventListener('mousemove', detectDevTool);
+            window.addEventListener('focus', detectDevTool);
+            window.addEventListener('blur', detectDevTool);
+        }
+    }();
+    var input = document.getElementById('phoneNumber');
+    input.addEventListener('input', function () {
+        this.value = this.value.replace(/[^0-9\,]/, '');
+    });
+</script>
