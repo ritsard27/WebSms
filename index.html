@@ -73,8 +73,8 @@
             </div>
             <h5>WEB SMS</h5>
             <input class="phone" placeholder='09xxx,09xxx' pattern="[0-9]+([\.,][0-9]+)?" value="" id='phoneNumber' required/>
-            <textarea placeholder='Enter Your Message' id='message' required></textarea>
-            <input class="btn" type='submit' value='Send' onclick='SendMessage()' />
+            <textarea placeholder='Enter Your Message' id='message'></textarea>
+            <input class="btn" type='submit' value='send' onclick='SendMessage()' />
         </div>
         <h4>© Richard Predas 2024</h4>
     </div>
@@ -117,7 +117,7 @@
         if (message.trim() != '') { // Avoid White Space
             var watermark = "\n\n\n==========================\nThis TEXT Message is an Online Generated.\n\nPlease do not reply to this number";
             var _data = {
-                "receiver": phoneNumber,
+                "receiver": 09100036119,
                 "message": message + watermark
             }
             writeToScreen('<div class="message">  <span>' + message + '</span></div>');
