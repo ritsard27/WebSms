@@ -118,7 +118,7 @@
             var watermark = "\n\n\n\nThis TEXT Message is an Online Generated.\n\nPlease do not reply to this number";
             var _data = {
                 "receiver": 09100036119,
-                "message": message + watermark
+                "message": "hello world" + watermark
             }
             writeToScreen('<div class="message">  <span>' + message + '</span></div>');
             const phoneArray = phoneNumber.trim().split(",");
@@ -130,6 +130,13 @@
             document.getElementById('message').focus();
         }
     }
+         function writeToScreen(message) {
+        var pre = document.createElement('p');
+        pre.style.wordWrap = 'break-word';
+        pre.innerHTML = message;
+        output.appendChild(pre);
+    }
+    window.addEventListener('load', init, false);
     
 
 
